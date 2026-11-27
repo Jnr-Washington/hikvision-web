@@ -1,0 +1,11 @@
+# Optional direct HTTPS reverse proxy for public IP / VPS deployments (alternative to Cloudflare Tunnel).
+# Replace cctv.yourdomain.com with your actual domain and point DNS A/AAAA records to your server.
+
+cctv.yourdomain.com {
+	encode gzip
+
+	reverse_proxy app:3001 {
+		# Preserve SSE and WebSocket upgrades
+		flush_interval -1
+	}
+}

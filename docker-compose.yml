@@ -1,0 +1,17 @@
+# Local development stack: runs go2rtc media relay bound only to localhost.
+# Copy go2rtc.example.yaml -> go2rtc.yaml before starting:
+#   docker compose up -d
+# When running the Node.js backend directly on your host, set:
+#   GO2RTC_INTERNAL_URL=http://127.0.0.1:1984
+
+services:
+  go2rtc:
+    image: alexxit/go2rtc:latest
+    container_name: hikvision-go2rtc-dev
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:1984:1984"
+      - "127.0.0.1:8555:8555/tcp"
+      - "127.0.0.1:8555:8555/udp"
+    volumes:
+      - ./go2rtc.yaml:/config/go2rtc.yaml:ro

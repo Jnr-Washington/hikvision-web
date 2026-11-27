@@ -1,0 +1,49 @@
+# Production stack: internal go2rtc relay + authenticated Express app + Cloudflare Tunnel
+# Usage:
+#   docker compose -f docker-compose.prod.yml up -d --build
+
+services:
+  go2rtc:
+    image: alexxit/go2rtc:latest
+    container_name: hikvision-go2rtc
+    restart: unless-stopped
+    expose:
+      - "1984"
+    volumes:
+      - ./go2rtc.yaml:/config/go2rtc.yaml:ro
+    networks:
+      - internal
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: hikvision-app
+    restart: unless-stopped
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      NODE_ENV: production
+      PORT: ${PORT:-3001}
+      GO2RTC_INTERNAL_URL: http://go2rtc:1984
+    expose:
+      - "3001"
+    depends_on:
+      - go2rtc
+    networks:
+      - internal
+
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    container_name: hikvision-cloudflared
+    restart: unless-stopped
+    command: tunnel --no-autoupdate run --token ${CLOUDFLARE_TUNNEL_TOKEN:-}
+    depends_on:
+      - app
+    networks:
+      - internal
+
+networks:
+  internal:
+    driver: bridge

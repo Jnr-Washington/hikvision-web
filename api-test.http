@@ -1,0 +1,52 @@
+@baseUrl = http://localhost:3001
+
+### Health check (public)
+GET {{baseUrl}}/api/health
+
+### Check current session
+GET {{baseUrl}}/api/auth/me
+
+### Login (sets HttpOnly cctv_session cookie)
+POST {{baseUrl}}/api/auth/login
+Content-Type: application/json
+
+{
+  "username": "admin",
+  "password": "REPLACE_WITH_YOUR_PASSWORD"
+}
+
+### List configured cameras
+GET {{baseUrl}}/api/cameras
+
+### Fetch JPEG snapshot for channel 101
+GET {{baseUrl}}/api/snapshot/101
+
+### Continuous PTZ move (clamped to [-100, 100])
+POST {{baseUrl}}/api/ptz/1
+Content-Type: application/json
+
+{
+  "pan": 40,
+  "tilt": 0,
+  "zoom": 0
+}
+
+### Stop PTZ movement
+POST {{baseUrl}}/api/ptz/1
+Content-Type: application/json
+
+{
+  "pan": 0,
+  "tilt": 0,
+  "zoom": 0
+}
+
+### Go to PTZ preset 1 on channel 1
+POST {{baseUrl}}/api/ptz/1/preset/1
+
+### Subscribe to live SSE alerts
+GET {{baseUrl}}/api/events/stream
+Accept: text/event-stream
+
+### Logout
+POST {{baseUrl}}/api/auth/logout

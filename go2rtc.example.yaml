@@ -1,0 +1,24 @@
+# Copy this file to go2rtc.yaml and fill in your LAN NVR/camera credentials.
+# Never commit go2rtc.yaml to git.
+
+api:
+  listen: ":1984"
+  # In production, restrict allowed origins or keep go2rtc strictly internal behind Express:
+  # origin: "https://cctv.yourdomain.com"
+
+rtsp:
+  listen: ":8554"
+
+webrtc:
+  listen: ":8555"
+
+streams:
+  # Hikvision channel format: {channel}01 = main stream (HD), {channel}02 = sub stream (SD)
+  # Ensure cameras/NVR use H.264 (not H.265) for universal browser MSE/WebRTC playback.
+  front_door_hd:
+    - rtsp://viewer:REPLACE_ME@192.168.1.100:554/Streaming/Channels/101
+  front_door_sd:
+    - rtsp://viewer:REPLACE_ME@192.168.1.100:554/Streaming/Channels/102
+
+log:
+  level: info
